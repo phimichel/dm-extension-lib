@@ -1,4 +1,4 @@
-import Keycloak, { KeycloakAdapter }  from './keycloak.js'
+import * as Keycloak  from './keycloak.js'
 
 export function exchangeToken(token, authUrl, realm, clientId, clientSecret, subjectIssuer) {
     var settings = {
