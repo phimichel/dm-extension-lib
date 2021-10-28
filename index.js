@@ -1,3 +1,3 @@
-import { exchangeToken } from 'dm-extension-auth.js';
+import { exchangeToken } from './dm-extension-auth.js';
 
 export {exchangeToken}
