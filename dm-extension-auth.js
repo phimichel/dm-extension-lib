@@ -2,14 +2,6 @@ import * as k from "./keycloak.js";
 
 //token, authUrl, realm, clientId, clientSecret, subjectIssuer
 export async function exchangeToken(options) {
-  var settings = {
-    async: true,
-    crossDomain: true,
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  };
   const params = {
     client_id: options.clientId,
     client_secret: options.clientSecret,
@@ -30,23 +22,19 @@ export async function exchangeToken(options) {
     throw new Error(message);
   }
   return response.json();
+}
 
-  // const tokenExchangeAdapter = {
-  //     login(options) {
-  //         console.log("Login called")
-  //     }
-  // }
-
-  // var keycloak = new Keycloak({
-  //     url: authUrl,
-  //     realm,
-  //     clientId,
-  //     clientSecret,
-  // });
-  // console.log(k)
-  // var keycloak = new Keycloak({
-  //     adapter: tokenExchangeAdapter,
-  // })
-
-  // keycloak.init()
+export async function exchangeTokenAndInitKeycloak(options, kcInstance) {
+  // 1. exchange token
+  const tokenData = await exchangeToken(options);
+  if (tokenData) {
+    //2. init keycloak with exchanged token
+    return kcInstance.init({
+      token: tokenData.access_token,
+      refreshToken: tokenData.refresh_token,
+      enableLogging: true,
+      checkLoginIframe: false,
+    });
+  }
+  return Promise.reject(new Error('got no token from exchange'));
 }
